@@ -3,7 +3,7 @@ import Register from "@/components/views/Register";
 
 const RegisterPage = () => {
     return (
-        <AuthLayout title="Acara | Register">
+        <AuthLayout title="Acara - Register">
             <h1>Success</h1>
         </AuthLayout>
     );

@@ -78,16 +78,16 @@ const Register = () => {
                                         <div className="relative w-full max-w-xs">
                                             <Input
                                                 {...field}
-                                                type={showPassword ? "text" : "password"}
+                                                type={showConfirmPassword ? "text" : "password"}
                                                 placeholder="Password Confirmation"
                                                 className={`input rounded-lg shadow-none ring-1 w-full max-w-xs text-xs font-sans pr-8 ${fieldState.error ? "ring-primary" : "ring-gray-200/75" }`}
                                             />
                                             <button
                                                 type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
+                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                                 className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                                             >
-                                                {showPassword ? <AiOutlineEye size={14} /> : <AiOutlineEyeInvisible size={14} />}
+                                                {showConfirmPassword ? <AiOutlineEye size={14} /> : <AiOutlineEyeInvisible size={14} />}
                                             </button>
                                         </div>
                                         {fieldState.error && (

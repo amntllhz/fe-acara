@@ -13,7 +13,17 @@ const registerSchema = yup.object().shape({
     password: yup
         .string()
         .min(8, "Password must be at least 8 characters")
-        .required("Password is required"),
+        .required("Password is required")
+        .test(
+            "at-least-one-uppercase", 
+            "Password must contain at least one uppercase letter", 
+            (value) => /[A-Z]/.test(value ?? "")
+        )
+        .test(
+            "at-least-one-number", 
+            "Password must contain at least one number", 
+            (value) => /[0-9]/.test(value ?? "")
+        ),
     confirmPassword: yup
         .string()
         .oneOf([yup.ref("password"), ""], "Passwords must match")
@@ -38,9 +48,14 @@ const useRegister = () => {
     const {mutate: mutateRegister, isPending: isPendingRegister} = useMutation({
         mutationFn: registerService,        
         onError: (error: any) => {
-            setError("root", {                
-                message: error.message,
-            });
+            const message = error.response?.data?.message || error.message;
+            const field = error.response?.data?.field;
+
+            if (field) {
+                setError(field, { message });
+            } else {
+                setError("root", { message });
+            }
         },
 
         onSuccess: () => {
