@@ -6,6 +6,20 @@
   --foreground: #171717;
 }
 
+@theme {
+
+  /* Breakpoints */
+  --breakpoint-*: initial;
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  
+  /* Colors */  
+  --color-primary: #F31260;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
