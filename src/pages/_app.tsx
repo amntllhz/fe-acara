@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,14 +23,16 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps }}: AppProps) {
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <div className={`${geistSans.variable} ${geistMono.variable}`}>
-            <Component {...pageProps} />;    
-        </div>
-      </QueryClientProvider>    
+      <SessionProvider session={session}>
+        <QueryClientProvider client={queryClient}>
+          <div className={`${geistSans.variable} ${geistMono.variable}`}>
+              <Component {...pageProps} /> 
+          </div>
+        </QueryClientProvider>    
+      </SessionProvider>
     </>
   )
 }
