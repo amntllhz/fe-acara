@@ -39,7 +39,7 @@ const useLogin = () => {
         });
 
         if (result?.error && result.status === 401) {
-            throw new Error("Invalid credentials");
+            throw new Error("Your email or password is incorrect.");
         }
     };
 

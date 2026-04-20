@@ -1,5 +1,6 @@
 import { Button, Card, Input, Spinner } from "@heroui/react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { CiWarning } from "react-icons/ci";
 import { useState } from "react";
 import useLogin from "./useLogin";
 import { Controller } from "react-hook-form";
@@ -58,7 +59,10 @@ const Login = () => {
                                    
                                 
                                 {errors.root && (
-                                    <p className="text-danger text-[11px] text-center font-sans">{errors.root.message}</p>
+                                    <div className="flex gap-1.5 rounded-lg shadow-none w-full max-w-xs font-sans bg-primary/10 px-2 py-2 justify-center items-center">
+                                        <CiWarning className="text-primary"></CiWarning>
+                                        <p className="text-danger text-[11px] text-center font-sans">{errors.root.message}</p>
+                                    </div>
                                 )}                                                                                                                                        
 
                                 {/* Button Submit */}
