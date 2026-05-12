@@ -25,15 +25,15 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function App({ Component, pageProps: { session, ...pageProps }}: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
       <SessionProvider session={session}>
         <QueryClientProvider client={queryClient}>
-          <div className={`${geistSans.variable} ${geistMono.variable}`}>
-              <Component {...pageProps} /> 
+          <div className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
+            <Component {...pageProps} />
           </div>
-        </QueryClientProvider>    
+        </QueryClientProvider>
       </SessionProvider>
     </>
   )

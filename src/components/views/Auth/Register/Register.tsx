@@ -13,50 +13,50 @@ const Register = () => {
         <>
             <div className="flex lg:flex-row xs:flex-col lg:gap-0 xs:gap-4">
                 <div className="flex flex-col justify-center items-center gap-6">
-                    <img src="/images/general/logo.svg" alt="logo" className="w-20"/>
-                    <img src="/images/illustrations/login.svg" alt="illustration" className="w-1/2" />                    
+                    <img src="/images/general/logo.svg" alt="logo" className="w-20" />
+                    <img src="/images/illustrations/login.svg" alt="illustration" className="w-1/2" />
                 </div>
                 <div className="flex flex-col justify-center items-center">
                     <Card className="p-6 rounded-xl shadow-none ring-1 ring-gray-200/75">
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col">
                                 <h3 className="font-sans text-md font-semibold">Create Account</h3>
-                                <p className="font-sans text-gray-500 text-[11px]">Have an account? <a href="/auth/login" className="text-[11px] text-primary">Login</a></p>
+                                <p className="font-sans text-gray-500 text-[11px]">Have an account? <a href="/auth/login" className="text-[11px] text-main">Login</a></p>
                             </div>
                             <form className="flex flex-col lg:w-80 xs:w-75 gap-3" onSubmit={handleSubmit(handleRegister)}>
-                                <Controller name="fullName" control={control} render={({field, fieldState}) => (
+                                <Controller name="fullName" control={control} render={({ field, fieldState }) => (
                                     <div className="flex flex-col gap-1">
-                                        <Input {...field} aria-label="fullName" type="text" autoComplete="off" placeholder="Fullname" className={`input rounded-lg shadow-none ring-1 w-full max-w-xs text-xs font-sans ${fieldState.error ? "ring-primary" : "ring-gray-200/75" }`} />
+                                        <Input {...field} aria-label="fullName" type="text" autoComplete="off" placeholder="Fullname" className={`input rounded-md placeholder-gray-300 shadow-none ring-1 w-full max-w-xs text-xs font-sans ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`} />
                                         {fieldState.error && (
-                                            <p className="text-primary text-[9px] font-sans">{fieldState.error.message}</p>
+                                            <p className="text-main text-[9px] font-sans">{fieldState.error.message}</p>
                                         )}
                                     </div>
-                                )}/>
-                                <Controller name="username" control={control} render={({field, fieldState}) => (
+                                )} />
+                                <Controller name="username" control={control} render={({ field, fieldState }) => (
                                     <div className="flex flex-col gap-1">
-                                        <Input {...field} aria-label="username" type="text" autoComplete="off" placeholder="Username" className={`input rounded-lg shadow-none ring-1 w-full max-w-xs text-xs font-sans ${fieldState.error ? "ring-primary" : "ring-gray-200/75" }`}/>
+                                        <Input {...field} aria-label="username" type="text" autoComplete="off" placeholder="Username" className={`input rounded-md placeholder-gray-300 shadow-none ring-1 w-full max-w-xs text-xs font-sans ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`} />
                                         {fieldState.error && (
-                                            <p className="text-primary text-[9px] font-sans">{fieldState.error.message}</p>
+                                            <p className="text-main text-[9px] font-sans">{fieldState.error.message}</p>
                                         )}
                                     </div>
-                                )}/>  
-                                <Controller name="email" control={control} render={({field, fieldState}) => (
+                                )} />
+                                <Controller name="email" control={control} render={({ field, fieldState }) => (
                                     <div className="flex flex-col gap-1">
-                                        <Input {...field} aria-label="email" type="email" autoComplete="off" placeholder="Email" className={`input rounded-lg shadow-none ring-1 w-full max-w-xs text-xs font-sans ${fieldState.error ? "ring-primary" : "ring-gray-200/75" }`}/>
+                                        <Input {...field} aria-label="email" type="email" autoComplete="off" placeholder="E-mail" className={`input rounded-md placeholder-gray-300 shadow-none ring-1 w-full max-w-xs text-xs font-sans ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`} />
                                         {fieldState.error && (
-                                            <p className="text-primary text-[9px] font-sans">{fieldState.error.message}</p>
+                                            <p className="text-main text-[9px] font-sans">{fieldState.error.message}</p>
                                         )}
                                     </div>
-                                )}/>             
-                                    
-                                <Controller name="password" control={control} render={({field, fieldState}) => (
+                                )} />
+
+                                <Controller name="password" control={control} render={({ field, fieldState }) => (
                                     <div className="flex flex-col gap-1.5">
                                         <div className="relative w-full max-w-xs">
                                             <Input
                                                 {...field}
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="Password"
-                                                className={`input rounded-lg shadow-none ring-1 w-full max-w-xs text-xs font-sans pr-8 ${fieldState.error ? "ring-primary" : "ring-gray-200/75" }`}
+                                                className={`input rounded-md placeholder-gray-300 shadow-none ring-1 w-full max-w-xs text-xs font-sans pr-8 ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`}
                                             />
                                             <button
                                                 type="button"
@@ -67,20 +67,20 @@ const Register = () => {
                                             </button>
                                         </div>
                                         {fieldState.error && (
-                                            <p className="text-primary text-[9px] font-sans">{fieldState.error.message}</p>
+                                            <p className="text-main text-[9px] font-sans">{fieldState.error.message}</p>
                                         )}
                                     </div>
-                                    
-                                )}/>
 
-                                <Controller name="confirmPassword" control={control} render={({field, fieldState}) => (
+                                )} />
+
+                                <Controller name="confirmPassword" control={control} render={({ field, fieldState }) => (
                                     <div className="flex flex-col gap-1.5">
                                         <div className="relative w-full max-w-xs">
                                             <Input
                                                 {...field}
                                                 type={showConfirmPassword ? "text" : "password"}
                                                 placeholder="Password Confirmation"
-                                                className={`input rounded-lg shadow-none ring-1 w-full max-w-xs text-xs font-sans pr-8 ${fieldState.error ? "ring-primary" : "ring-gray-200/75" }`}
+                                                className={`input rounded-md placeholder-gray-300 shadow-none ring-1 w-full max-w-xs text-xs font-sans pr-8 ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`}
                                             />
                                             <button
                                                 type="button"
@@ -91,20 +91,20 @@ const Register = () => {
                                             </button>
                                         </div>
                                         {fieldState.error && (
-                                            <p className="text-primary text-[9px] font-sans">{fieldState.error.message}</p>
+                                            <p className="text-main text-[9px] font-sans">{fieldState.error.message}</p>
                                         )}
                                     </div>
-                                    
-                                )}/>      
-                                
+
+                                )} />
+
                                 {errors.root && (
                                     <p className="text-danger text-[11px] text-center">{errors.root.message}</p>
-                                )}                                                                                                                                        
+                                )}
 
                                 {/* Button Submit */}
-                                <Button  type="submit" className="btn bg-primary rounded-lg shadow-none ring-1 ring-gray-200/75 w-full max-w-xs text-xs font-sans mt-3">
+                                <Button type="submit" className="btn bg-main text-white rounded-lg shadow-none ring-1 ring-gray-200/75 w-full max-w-xs text-xs font-sans mt-3">
                                     {isPendingRegister ?
-                                        <Spinner color="current"/> : "Register"
+                                        <Spinner color="current" /> : "Register"
                                     }
                                 </Button>
                             </form>

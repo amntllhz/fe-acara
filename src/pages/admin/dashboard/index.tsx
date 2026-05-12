@@ -1,12 +1,15 @@
 import Dashboard from "@/components/views/Admin/Dashboard";
 import DashboardLayout from "@/components/layouts/DashboardLayout/DashboardLayout";
 
-const DashboardAdminPage = () => {
+const AdminDashboardPage = () => {
     return (
-        <DashboardLayout title="Acara - Admin Dashboard" type="admin">
+        <DashboardLayout
+            title="Dashboard"
+            description="Menampilkan data Dashboard"
+            type="admin">
             <Dashboard />
         </DashboardLayout>
     );
 };
 
-export default DashboardAdminPage;
+export default AdminDashboardPage;
