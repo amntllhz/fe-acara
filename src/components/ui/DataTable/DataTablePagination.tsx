@@ -1,5 +1,12 @@
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 interface DataTablePaginationProps {
     /** Current page (1-based) */
@@ -9,59 +16,62 @@ interface DataTablePaginationProps {
     onPageChange: (page: number) => void
 }
 
+function getPageNumbers(page: number, totalPages: number): (number | "...")[] {
+    if (totalPages <= 5) {
+        return Array.from({ length: totalPages }, (_, i) => i + 1)
+    }
+
+    if (page <= 3) return [1, 2, 3, "...", totalPages]
+    if (page >= totalPages - 2) return [1, "...", totalPages - 2, totalPages - 1, totalPages]
+    return [1, "...", page - 1, page, page + 1, "...", totalPages]
+}
+
 const DataTablePagination = ({
     page,
     totalPages,
     onPageChange,
 }: DataTablePaginationProps) => {
-    const canPrev = page > 1
-    const canNext = page < totalPages
+    const pageNumbers = getPageNumbers(page, totalPages)
 
     return (
-        <div className="flex items-center gap-1">
-            <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={() => onPageChange(1)}
-                disabled={!canPrev}
-                aria-label="First page"
-            >
-                <ChevronsLeft className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={() => onPageChange(page - 1)}
-                disabled={!canPrev}
-                aria-label="Previous page"
-            >
-                <ChevronLeft className="h-3.5 w-3.5" />
-            </Button>
+        <div>
+            <Pagination>
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious
+                            onClick={() => page > 1 && onPageChange(page - 1)}
+                            aria-disabled={page === 1}
+                            className={page === 1 ? "pointer-events-none opacity-40 text-[11px]" : "cursor-pointer text-[11px]"}
+                        />
+                    </PaginationItem>
 
-            <span className="text-xs text-muted-foreground px-2 min-w-20 text-center">
-                Page{" "}
-                <span className="font-medium text-foreground">{page}</span> of{" "}
-                <span className="font-medium text-foreground">{totalPages}</span>
-            </span>
+                    {pageNumbers.map((p, i) =>
+                        p === "..." ? (
+                            <PaginationItem key={`ellipsis-${i}`}>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                        ) : (
+                            <PaginationItem key={p}>
+                                <PaginationLink
+                                    isActive={p === page}
+                                    onClick={() => onPageChange(p as number)}
+                                    className="cursor-pointer text-[11px]"
+                                >
+                                    {p}
+                                </PaginationLink>
+                            </PaginationItem>
+                        )
+                    )}
 
-            <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={() => onPageChange(page + 1)}
-                disabled={!canNext}
-                aria-label="Next page"
-            >
-                <ChevronRight className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={() => onPageChange(totalPages)}
-                disabled={!canNext}
-                aria-label="Last page"
-            >
-                <ChevronsRight className="h-3.5 w-3.5" />
-            </Button>
+                    <PaginationItem>
+                        <PaginationNext
+                            onClick={() => page < totalPages && onPageChange(page + 1)}
+                            aria-disabled={page === totalPages}
+                            className={page === totalPages ? "pointer-events-none opacity-40 text-[11px]" : "cursor-pointer text-[11px]"}
+                        />
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
         </div>
     )
 }

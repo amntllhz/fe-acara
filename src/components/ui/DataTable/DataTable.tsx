@@ -138,21 +138,22 @@ const DataTable = <T extends DataItem>({
             {/* ── Footer ── */}
             {hasFooter && (
                 <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-4">
-                        {footer.info && (
-                            <DataTableInfo
-                                shown={footer.info.shown}
-                                total={footer.info.total}
-                            />
-                        )}
-                        {footer.limit && (
-                            <DataTableLimit
-                                value={footer.limit.value}
-                                onChange={footer.limit.onChange}
-                                options={footer.limit.options}
-                            />
-                        )}
-                    </div>
+
+                    {footer.info && (
+                        <DataTableInfo
+                            shown={footer.info.shown}
+                            total={footer.info.total}
+                        />
+                    )}
+                    {footer.limit && (
+                        <DataTableLimit
+                            className="hidden sm:flex"
+                            value={footer.limit.value}
+                            onChange={footer.limit.onChange}
+                            options={footer.limit.options}
+                        />
+                    )}
+
                     {footer.pagination && (
                         <DataTablePagination
                             page={footer.pagination.page}

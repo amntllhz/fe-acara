@@ -35,9 +35,9 @@ const DashboardLayoutSidebar = (props: PropTypes) => {
             <div
                 className={[
                     // Shared base
-                    "flex flex-col gap-2 w-64 h-dvh justify-between border-r border-gray-200 px-4 py-5 bg-white",
+                    "flex flex-col gap-2 w-64 h-full min-h-dvh justify-between border-r border-gray-200 px-4 py-5 bg-white",
                     // Desktop: bagian dari layout biasa
-                    "lg:relative lg:translate-x-0 lg:flex lg:shrink-0",
+                    "lg:translate-x-0 lg:flex lg:shrink-0 lg:sticky lg:top-0 lg:self-start",
                     // Mobile: selalu fixed, slide in/out
                     "fixed inset-y-0 left-0 z-30 transition-transform duration-300 ease-in-out",
                     isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
