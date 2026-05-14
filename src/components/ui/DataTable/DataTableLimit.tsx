@@ -29,12 +29,12 @@ const DataTableLimit = ({
                 value={String(value)}
                 onValueChange={(val) => onChange(Number(val))}
             >
-                <SelectTrigger className="h-8 w-14 text-[11px]">
+                <SelectTrigger className="h-8 w-15 text-[10px]">
                     <SelectValue placeholder={String(value)} />
                 </SelectTrigger>
                 <SelectContent>
                     {options.map((opt) => (
-                        <SelectItem key={opt} value={String(opt)} className="text-[11px]">
+                        <SelectItem key={opt} value={String(opt)} className="text-[10px]">
                             {opt}
                         </SelectItem>
                     ))}

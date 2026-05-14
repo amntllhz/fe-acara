@@ -1,9 +1,10 @@
-import { Button, Card, Input, Spinner } from "@heroui/react";
+import { Button, Card, Input } from "@heroui/react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { CiWarning } from "react-icons/ci";
 import { useState } from "react";
 import useLogin from "./useLogin";
 import { Controller } from "react-hook-form";
+import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
     const { control, handleSubmit, handleLogin, isPendingLogin, errors } = useLogin();
@@ -68,7 +69,10 @@ const Login = () => {
                                 {/* Button Submit */}
                                 <Button type="submit" className="btn bg-main rounded-md text-white shadow-none ring-1 ring-gray-200/75 w-full max-w-xs text-xs font-sans mt-3">
                                     {isPendingLogin ?
-                                        <Spinner color="current" /> : "Login"
+                                        <span className="flex gap-2 items-center">
+                                            <Spinner />
+                                            <span>Authenticating...</span>
+                                        </span> : "Login"
                                     }
                                 </Button>
                             </form>

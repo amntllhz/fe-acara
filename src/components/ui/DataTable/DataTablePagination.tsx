@@ -7,6 +7,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
+import { cn } from "@/lib/utils"
 
 interface DataTablePaginationProps {
     /** Current page (1-based) */
@@ -41,7 +42,7 @@ const DataTablePagination = ({
                         <PaginationPrevious
                             onClick={() => page > 1 && onPageChange(page - 1)}
                             aria-disabled={page === 1}
-                            className={page === 1 ? "pointer-events-none opacity-40 text-[11px]" : "cursor-pointer text-[11px]"}
+                            className={page === 1 ? "pointer-events-none opacity-50 text-[11px]" : "cursor-pointer text-[11px]"}
                         />
                     </PaginationItem>
 
@@ -55,7 +56,7 @@ const DataTablePagination = ({
                                 <PaginationLink
                                     isActive={p === page}
                                     onClick={() => onPageChange(p as number)}
-                                    className="cursor-pointer text-[11px]"
+                                    className={cn("cursor-pointer text-[10px]", p === page ? "text-main bg-main/5 hover:bg-main/5 hover:text-main" : "")}
                                 >
                                     {p}
                                 </PaginationLink>

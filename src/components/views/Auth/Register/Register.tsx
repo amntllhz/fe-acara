@@ -1,8 +1,9 @@
-import { Button, Card, Input, Spinner } from "@heroui/react";
+import { Button, Card, Input } from "@heroui/react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
 import useRegister from "./useRegister";
 import { Controller } from "react-hook-form";
+import { Spinner } from "@/components/ui/spinner";
 
 const Register = () => {
     const { control, handleSubmit, handleRegister, isPendingRegister, errors } = useRegister();
@@ -104,7 +105,10 @@ const Register = () => {
                                 {/* Button Submit */}
                                 <Button type="submit" className="btn bg-main text-white rounded-lg shadow-none ring-1 ring-gray-200/75 w-full max-w-xs text-xs font-sans mt-3">
                                     {isPendingRegister ?
-                                        <Spinner color="current" /> : "Register"
+                                        <span className="flex gap-2 items-center">
+                                            <Spinner />
+                                            <span>Registering...</span>
+                                        </span> : "Register"
                                     }
                                 </Button>
                             </form>

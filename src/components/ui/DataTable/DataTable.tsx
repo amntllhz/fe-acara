@@ -12,6 +12,7 @@ import DataTableCreateButton from "./DataTableCreateButton"
 import DataTableInfo from "./DataTableInfo"
 import DataTableLimit from "./DataTableLimit"
 import DataTablePagination from "./DataTablePagination"
+import { CiBookmarkRemove, CiFolderOff } from "react-icons/ci"
 
 interface Column {
     key: string
@@ -113,9 +114,15 @@ const DataTable = <T extends DataItem>({
 
                     <TableBody>
                         {data.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="py-10 text-center text-muted-foreground">
-                                    No data available
+                            <TableRow className="w-full">
+                                <TableCell colSpan={columns.length} className="py-8 text-center">
+                                    <div className="flex flex-col items-center gap-2 text-muted-foreground/50">
+                                        <CiFolderOff className="w-7 h-7 bg-gray-100 rounded-full p-1.5" />
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-xs font-medium text-foreground">No data available</span>
+                                            <span className="text-[10px] text-muted-foreground/80">Get started by creating a new category</span>
+                                        </div>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ) : (
