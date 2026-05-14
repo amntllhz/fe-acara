@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
+import { useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +27,15 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  useEffect(() => {
+    document.body.classList.add(geistSans.variable, geistMono.variable, "font-sans");
+  }, []);
+
   return (
-    <>
-      <SessionProvider session={session}>
-        <QueryClientProvider client={queryClient}>
-          <div className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
-            <Component {...pageProps} />
-          </div>
-        </QueryClientProvider>
-      </SessionProvider>
-    </>
-  )
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient}>
+        <Component {...pageProps} />
+      </QueryClientProvider>
+    </SessionProvider>
+  );
 }

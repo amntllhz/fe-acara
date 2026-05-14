@@ -76,7 +76,7 @@ const DashboardLayoutSidebar = (props: PropTypes) => {
                                 key={item.href}
                                 id={item.href}
                                 textValue={item.label}
-                                className="rounded-lg py-1 data-[selected=true]:text-primary data-[selected=true]:bg-primary/5 data-[hovered=true]:bg-gray-100"
+                                className="rounded-lg py-1 data-[selected=true]:text-main data-[selected=true]:bg-main/5 hover:bg-gray-100 transition duration-300"
                                 onClick={() => router.push(item.href)}
                             >
                                 <div className="flex items-center gap-1">

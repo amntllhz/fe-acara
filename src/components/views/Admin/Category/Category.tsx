@@ -11,6 +11,7 @@ import { useRouter } from "next/router"
 import { ReactNode, useCallback } from "react"
 import { MoreHorizontal } from "lucide-react"
 import { COLUMN_LISTS_CATEGORY, DUMMY_CATEGORY, type Category } from "./Category.constant"
+import { CiTrash, CiViewList } from "react-icons/ci"
 
 const CategoryPage = () => {
     const { push } = useRouter()
@@ -23,20 +24,20 @@ const CategoryPage = () => {
                         <Image
                             src={item.icon}
                             alt={`icon ${item.name}`}
-                            width={40}
-                            height={40}
-                            className="rounded-md object-cover"
+                            width={48}
+                            height={48}
+                            className="rounded-sm outline outline-gray-200 object-cover"
                         />
                     )
                 case "name":
                     return (
-                        <span className="text-sm font-sans font-medium">
+                        <span className="text-xs font-sans font-medium">
                             {item.name}
                         </span>
                     )
                 case "description":
                     return (
-                        <span className="text-sm font-sans text-muted-foreground">
+                        <span className="text-xs font-sans text-muted-foreground">
                             {item.description}
                         </span>
                     )
@@ -44,18 +45,23 @@ const CategoryPage = () => {
                     return (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuItem
+                                    className="text-xs flex w-full"
                                     onClick={() => push(`/admin/category/${item._id}`)}
                                 >
-                                    Detail Category
+                                    <CiViewList className="mr-1 h-3 w-3" />
+                                    Detail
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="text-red-500 focus:text-red-500">
-                                    Delete Category
+                                <DropdownMenuItem
+                                    variant="destructive"
+                                    className="w-full text-red-500 focus:text-red-500 text-xs flex">
+                                    <CiTrash className="mr-1 h-3 w-3" />
+                                    Delete
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

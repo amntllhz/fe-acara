@@ -27,11 +27,11 @@ interface PropTypes<T extends DataItem> {
 const DataTable = <T extends DataItem>({ columns, data, renderCell }: PropTypes<T>) => {
     return (
         <div className="rounded-md border">
-            <Table>
+            <Table className="text-xs">
                 <TableHeader>
                     <TableRow>
                         {columns.map((column) => (
-                            <TableHead key={column.key} className="text-xs font-sans text-muted-foreground">
+                            <TableHead key={column.key} className="text-center text-muted-foreground">
                                 {column.label}
                             </TableHead>
                         ))}
@@ -41,7 +41,7 @@ const DataTable = <T extends DataItem>({ columns, data, renderCell }: PropTypes<
                 <TableBody>
                     {data.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={columns.length} className="py-10 text-center font-sans text-xs text-muted-foreground">
+                            <TableCell colSpan={columns.length} className="py-10 text-center text-muted-foreground">
                                 No data available
                             </TableCell>
                         </TableRow>
@@ -49,8 +49,10 @@ const DataTable = <T extends DataItem>({ columns, data, renderCell }: PropTypes<
                         data.map((item) => (
                             <TableRow key={item.id}>
                                 {columns.map((column) => (
-                                    <TableCell key={column.key}>
-                                        {renderCell(item, column.key)}
+                                    <TableCell key={column.key} className="text-center">
+                                        <div className="flex justify-center items-center">
+                                            {renderCell(item, column.key)}
+                                        </div>
                                     </TableCell>
                                 ))}
                             </TableRow>

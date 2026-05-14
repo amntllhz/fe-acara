@@ -41,7 +41,7 @@ const DashboardLayout = (props: PropTypes) => {
                     {/* Konten halaman */}
                     <main className="flex flex-col gap-4 p-4">
                         <div className="flex flex-col gap-1">
-                            <h1 className="font-sans text-lg font-semibold text-primary tracking-wide">
+                            <h1 className="font-sans text-lg font-semibold text-main tracking-wide">
                                 {title}
                             </h1>
                             <p className="font-sans text-xs text-gray-600">
