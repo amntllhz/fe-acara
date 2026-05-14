@@ -90,7 +90,7 @@ const DashboardLayoutSidebar = (props: PropTypes) => {
 
                 <div className="flex items-center p-1">
                     <Button
-                        className="btn bg-white rounded-lg shadow-none ring-1 ring-gray-200/75 w-full max-w-xs text-xs text-gray-500 font-sans mt-3"
+                        className="btn bg-white rounded-lg shadow-none ring-1 ring-gray-200/75 w-full max-w-xs text-xs text-gray-500 font-normal font-sans mt-3"
                         onClick={() => signOut()}>
                         <CiLogout className="w-4 h-4" />
                         Log Out

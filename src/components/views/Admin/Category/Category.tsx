@@ -1,20 +1,48 @@
 import DataTable from "@/components/ui/DataTable"
-import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { ReactNode, useCallback } from "react"
+import { ReactNode, useCallback, useMemo, useState } from "react"
 import { MoreHorizontal } from "lucide-react"
 import { COLUMN_LISTS_CATEGORY, DUMMY_CATEGORY, type Category } from "./Category.constant"
 import { CiTrash, CiViewList } from "react-icons/ci"
 
+const PAGE_SIZE_OPTIONS = [3, 5, 10]
+
 const CategoryPage = () => {
     const { push } = useRouter()
+
+    const [search, setSearch] = useState("")
+    const [limit, setLimit] = useState(5)
+    const [page, setPage] = useState(1)
+
+    // Client-side filtering on the dummy data
+    const filtered = useMemo(
+        () =>
+            DUMMY_CATEGORY.filter(
+                (c) =>
+                    c.name.toLowerCase().includes(search.toLowerCase()) ||
+                    c.description.toLowerCase().includes(search.toLowerCase())
+            ),
+        [search]
+    )
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / limit))
+    const safePageIndex = Math.min(page, totalPages)
+    const paginatedData = filtered.slice(
+        (safePageIndex - 1) * limit,
+        safePageIndex * limit
+    )
+
+    const handlePageChange = (p: number) => setPage(Math.min(Math.max(1, p), totalPages))
+    const handleLimitChange = (l: number) => { setLimit(l); setPage(1) }
+    const handleSearchChange = (v: string) => { setSearch(v); setPage(1) }
 
     const renderCell = useCallback(
         (item: Category, columnKey: string): ReactNode => {
@@ -76,8 +104,33 @@ const CategoryPage = () => {
     return (
         <DataTable
             columns={COLUMN_LISTS_CATEGORY}
-            data={DUMMY_CATEGORY}
+            data={paginatedData}
             renderCell={renderCell}
+            toolbar={{
+                search: {
+                    value: search,
+                    onChange: handleSearchChange,
+                    placeholder: "Search category...",
+                },
+                onCreate: () => push("/admin/category/create"),
+                createLabel: "Add Category",
+            }}
+            footer={{
+                info: {
+                    shown: paginatedData.length,
+                    total: filtered.length,
+                },
+                limit: {
+                    value: limit,
+                    onChange: handleLimitChange,
+                    options: PAGE_SIZE_OPTIONS,
+                },
+                pagination: {
+                    page: safePageIndex,
+                    totalPages,
+                    onPageChange: handlePageChange,
+                },
+            }}
         />
     )
 }
