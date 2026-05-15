@@ -10,27 +10,29 @@ import Image from "next/image"
 import { useRouter } from "next/router"
 import { ReactNode, useCallback, useMemo, useState } from "react"
 import { MoreHorizontal } from "lucide-react"
+import { useDebounce } from "@/hooks/useDebounce"
 import { COLUMN_LISTS_CATEGORY, DUMMY_CATEGORY, type Category } from "./Category.constant"
 import { CiTrash, CiViewList } from "react-icons/ci"
-
-const PAGE_SIZE_OPTIONS = [3, 5, 10]
+import { LIMIT_LIST, LIMIT_DEFAULT, PAGE_DEFAULT, DELAY } from "@/constants/list.constant"
 
 const CategoryPage = () => {
     const { push } = useRouter()
 
     const [search, setSearch] = useState("")
-    const [limit, setLimit] = useState(5)
-    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(LIMIT_DEFAULT)
+    const [page, setPage] = useState(PAGE_DEFAULT)
+
+    const debouncedSearch = useDebounce(search, DELAY)
 
     // Client-side filtering on the dummy data
     const filtered = useMemo(
         () =>
             DUMMY_CATEGORY.filter(
                 (c) =>
-                    c.name.toLowerCase().includes(search.toLowerCase()) ||
-                    c.description.toLowerCase().includes(search.toLowerCase())
+                    c.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                    c.description.toLowerCase().includes(debouncedSearch.toLowerCase())
             ),
-        [search]
+        [debouncedSearch]
     )
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / limit))
@@ -40,9 +42,9 @@ const CategoryPage = () => {
         safePageIndex * limit
     )
 
-    const handlePageChange = (p: number) => setPage(Math.min(Math.max(1, p), totalPages))
-    const handleLimitChange = (l: number) => { setLimit(l); setPage(1) }
-    const handleSearchChange = (v: string) => { setSearch(v); setPage(1) }
+    const handlePageChange = (p: number) => setPage(Math.min(Math.max(PAGE_DEFAULT, p), totalPages))
+    const handleLimitChange = (l: number) => { setLimit(l); setPage(PAGE_DEFAULT) }
+    const handleSearchChange = (v: string) => { setSearch(v); setPage(PAGE_DEFAULT) }
 
     const renderCell = useCallback(
         (item: Category, columnKey: string): ReactNode => {
@@ -123,7 +125,7 @@ const CategoryPage = () => {
                 limit: {
                     value: limit,
                     onChange: handleLimitChange,
-                    options: PAGE_SIZE_OPTIONS,
+                    options: LIMIT_LIST,
                 },
                 pagination: {
                     page: safePageIndex,

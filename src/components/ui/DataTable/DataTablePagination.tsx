@@ -56,7 +56,7 @@ const DataTablePagination = ({
                                 <PaginationLink
                                     isActive={p === page}
                                     onClick={() => onPageChange(p as number)}
-                                    className={cn("cursor-pointer text-[10px]", p === page ? "text-main bg-main/5 hover:bg-main/5 hover:text-main" : "")}
+                                    className={cn("cursor-pointer text-[10px]", p === page ? "text-main font-bold bg-main/5 hover:bg-main/5 hover:text-main" : "")}
                                 >
                                     {p}
                                 </PaginationLink>
