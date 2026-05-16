@@ -49,6 +49,7 @@ export default NextAuth({
                         && user._id && 
                         me.status === 200
                     ) {
+                        user.accessToken = accessToken;
                         return user;
                     } else {
                         return null;

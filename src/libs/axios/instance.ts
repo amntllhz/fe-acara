@@ -4,7 +4,7 @@ import axios from "axios";
 import { getSession } from "next-auth/react";
 
 const headers = {
-    "Content-Type": "application/json"    
+    "Content-Type": "application/json"
 }
 
 const instance = axios.create({
@@ -13,11 +13,11 @@ const instance = axios.create({
     timeout: 60 * 1000
 });
 
-instance.interceptors.response.use(
-    async(request) => {
+instance.interceptors.request.use(
+    async (request) => {
         const session: SessionExtended | null = await getSession();
-        if(session && session.accessToken){ 
-            request.headers.Authorization = `Bearer ${session.accessToken}`
+        if (session && session.accessToken) {
+            request.headers.set("Authorization", `Bearer ${session.accessToken}`);
         }
         return request;
     },
@@ -26,8 +26,8 @@ instance.interceptors.response.use(
     }
 );
 
-instance.interceptors.request.use(
-    (response) => response,   
+instance.interceptors.response.use(
+    (response) => response,
     (error) => Promise.reject(error)
 );
 
