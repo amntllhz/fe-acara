@@ -1,4 +1,5 @@
-import { Button, Card, Input } from "@heroui/react";
+import { Card, Input } from "@heroui/react";
+import { Button } from "@/components/ui/button";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { CiWarning } from "react-icons/ci";
 import { useState } from "react";
@@ -67,7 +68,7 @@ const Login = () => {
                                 )}
 
                                 {/* Button Submit */}
-                                <Button type="submit" className="btn bg-main rounded-md text-white shadow-none ring-1 ring-gray-200/75 w-full max-w-xs text-xs font-sans mt-3">
+                                <Button type="submit" className="btn bg-main rounded-md text-white shadow-none w-full max-w-xs text-xs font-sans mt-3">
                                     {isPendingLogin ?
                                         <span className="flex gap-2 items-center">
                                             <Spinner />
