@@ -13,6 +13,7 @@ import DataTableInfo from "./DataTableInfo"
 import DataTableLimit from "./DataTableLimit"
 import DataTablePagination from "./DataTablePagination"
 import { CiBookmarkRemove, CiFolderOff } from "react-icons/ci"
+import { Skeleton } from "@heroui/react"
 
 interface Column {
     key: string
@@ -62,6 +63,7 @@ interface PropTypes<T extends DataItem> {
     renderCell: (item: T, columnKey: string) => ReactNode
     toolbar?: DataTableToolbarProps
     footer?: DataTableFooterProps
+    isLoading?: boolean
 }
 
 const DataTable = <T extends DataItem>({
@@ -70,6 +72,7 @@ const DataTable = <T extends DataItem>({
     renderCell,
     toolbar,
     footer,
+    isLoading,
 }: PropTypes<T>) => {
     const hasToolbar = toolbar && (toolbar.search || toolbar.onCreate)
     const hasFooter = footer && (footer.info || footer.limit || footer.pagination)
@@ -113,7 +116,20 @@ const DataTable = <T extends DataItem>({
                     </TableHeader>
 
                     <TableBody>
-                        {data.length === 0 ? (
+                        {isLoading ? (
+                            Array.from({ length: 5 }).map((_, rowIndex) => (
+                                <TableRow key={`skeleton-row-${rowIndex}`}>
+                                    {columns.map((column, colIndex) => (
+                                        <TableCell key={`skeleton-col-${colIndex}`} className="text-center py-3">
+                                            <Skeleton 
+                                                className="h-8 w-full rounded-md" 
+                                                style={{ opacity: 1 - (rowIndex * 0.15) }}
+                                            />
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : data.length === 0 ? (
                             <TableRow className="w-full">
                                 <TableCell colSpan={columns.length} className="py-8 text-center">
                                     <div className="flex flex-col items-center gap-2 text-muted-foreground/50">

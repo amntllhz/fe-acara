@@ -16,7 +16,7 @@ import { CiTrash, CiViewList } from "react-icons/ci"
 import { LIMIT_LIST, LIMIT_DEFAULT, PAGE_DEFAULT, DELAY } from "@/constants/list.constant"
 import useCategory from "./useCategory"
 import * as yup from "yup"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import uploadService from "@/services/upload.service"
 import categoryServices from "@/services/category.service"
@@ -27,9 +27,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { Input, TextArea } from "@heroui/react"
 import { Label } from "@/components/ui/label"
+import { LuImageUp } from "react-icons/lu"
+import { Spinner } from "@/components/ui/spinner"
+import { RiExchange2Line } from "react-icons/ri"
 
 const categorySchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -50,6 +52,7 @@ const CategoryPage = () => {
     // Modal State
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
+    const [isImageLoading, setIsImageLoading] = useState(false)
 
     const {
         register,
@@ -57,6 +60,7 @@ const CategoryPage = () => {
         setValue,
         watch,
         reset,
+        control,
         formState: { errors, isSubmitting },
     } = useForm({
         resolver: yupResolver(categorySchema),
@@ -98,6 +102,7 @@ const CategoryPage = () => {
             // Cloudinary backend response has the URL in secure_url
             const uploadedUrl = res.data?.data?.secure_url || res.data?.secure_url
             if (uploadedUrl) {
+                setIsImageLoading(true)
                 setValue("icon", uploadedUrl, { shouldValidate: true })
             }
         } catch (error) {
@@ -107,16 +112,19 @@ const CategoryPage = () => {
         }
     }
 
-    const onCancelModal = async () => {
-        if (iconUrl) {
-            try {
-                await uploadService.deleteFile({ fileUrl: iconUrl })
-            } catch (error) {
-                console.error("Failed to delete orphaned file", error)
-            }
-        }
+    const onCancelModal = () => {
+        // Close modal and reset form instantly for best UX
         setIsAddModalOpen(false)
         reset()
+        setIsUploading(false)
+        setIsImageLoading(false)
+
+        // Let the cleanup run silently in the background
+        if (iconUrl) {
+            uploadService.deleteFile({ fileUrl: iconUrl }).catch((error) => {
+                console.error("Failed to delete orphaned file", error)
+            })
+        }
     }
 
     const onSubmit = async (formData: any) => {
@@ -140,9 +148,9 @@ const CategoryPage = () => {
                         <Image
                             src={item.icon}
                             alt={`icon ${item.name}`}
-                            width={28}
-                            height={28}
-                            className="rounded-sm outline outline-gray-200 object-cover"
+                            width={22}
+                            height={22}
+                            className="rounded-sm outline outline-gray-200 w-8 h-8 object-cover"
                         />
                     ) : (
                         <div className="w-10 h-10 bg-gray-100 rounded-sm flex items-center justify-center text-[8px] text-gray-500 text-center px-2">
@@ -196,6 +204,7 @@ const CategoryPage = () => {
     return (
         <>
             <DataTable
+                isLoading={isLoading}
                 columns={COLUMN_LISTS_CATEGORY}
                 data={data || []}
                 renderCell={renderCell}
@@ -231,7 +240,7 @@ const CategoryPage = () => {
             }}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle className="text-main">Add New Category</DialogTitle>
+                        <DialogTitle>Add New Category</DialogTitle>
                         <DialogDescription className="text-xs">
                             Fill in the details below to create a new category.
                         </DialogDescription>
@@ -239,46 +248,76 @@ const CategoryPage = () => {
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div>
-                            <Label htmlFor="name" className="text-xs mb-1.5">Name</Label>
-                            <Input id="name" {...register("name")} placeholder="Category Name" />
-                            {errors.name && <p className="text-[10px] text-red-500 font-sans mt-1">{errors.name.message}</p>}
+                            <Label htmlFor="name" className="text-xs mb-1.5 block">Name</Label>
+                            <Controller name="name" control={control} render={({ field, fieldState }) => (
+                                <>
+                                    <Input {...field} aria-label="name" type="text" autoComplete="off" placeholder="Category Name" className={`input rounded-md placeholder-gray-300 shadow-none ring-1 w-full text-xs font-sans ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`} />
+                                    {fieldState.error && <p className="text-[9px] text-main font-sans mt-1">{fieldState.error.message}</p>}
+                                </>
+                            )} />
                         </div>
 
                         <div>
-                            <Label htmlFor="description" className="text-xs mb-1.5">Description</Label>
-                            <Textarea id="description" {...register("description")} placeholder="Category Description" />
-                            {errors.description && <p className="text-[10px] text-red-500 font-sans mt-1">{errors.description.message}</p>}
+                            <Label htmlFor="description" className="text-xs mb-1.5 block">Description</Label>
+                            <Controller name="description" control={control} render={({ field, fieldState }) => (
+                                <>
+                                    <TextArea {...field} aria-label="description" placeholder="Category Description" className={`input rounded-md placeholder-gray-300 shadow-none ring-1 w-full text-xs font-sans ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`} />
+                                    {fieldState.error && <p className="text-[9px] text-main font-sans mt-1">{fieldState.error.message}</p>}
+                                </>
+                            )} />
                         </div>
 
                         <div>
                             <Label className="text-xs mb-1.5">Icon</Label>
-                            <div className="mt-1 border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center relative cursor-pointer hover:bg-gray-50 transition">
-                                {isUploading ? (
-                                    <p className="text-sm text-gray-500">Uploading...</p>
-                                ) : iconUrl ? (
+                            <div className={`mt-1 border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center relative cursor-pointer hover:bg-gray-50 transition ${errors.icon ? "border-main" : "border-gray-200/75"}`}>
+                                {(isUploading || isImageLoading) && (
                                     <div className="flex flex-col items-center gap-2">
-                                        <Image src={iconUrl} alt="Preview" width={64} height={64} className="rounded object-cover" />
-                                        <p className="text-xs text-blue-500">Click to replace</p>
+                                        <Spinner />
+                                        <p className="text-xs text-gray-400">
+                                            {isUploading ? "Uploading..." : "Rendering preview..."}
+                                        </p>
                                     </div>
-                                ) : (
-                                    <p className="text-sm text-gray-500">Click or drag file to upload</p>
+                                )}
+
+                                {iconUrl && (
+                                    <div className={`flex flex-col items-center gap-3 ${isImageLoading ? 'opacity-0 absolute' : 'flex'}`}>
+                                        <Image
+                                            src={iconUrl}
+                                            alt="Preview"
+                                            width={64}
+                                            height={64}
+                                            className="rounded object-cover"
+                                            onLoad={() => setIsImageLoading(false)}
+                                        />
+                                        <div className="flex items-center gap-1">
+                                            <RiExchange2Line className="h-3 w-3 text-main" />
+                                            <p className="text-xs text-main">Click to replace</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {(!isUploading && !isImageLoading && !iconUrl) && (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <LuImageUp className="h-10 w-10 text-gray-300" />
+                                        <p className="text-xs text-gray-300">Click or drag file to upload</p>
+                                    </div>
                                 )}
                                 <input
                                     type="file"
                                     accept="image/*"
                                     className="absolute inset-0 opacity-0 cursor-pointer"
                                     onChange={handleFileDrop}
-                                    disabled={isUploading || isSubmitting}
+                                    disabled={isUploading || isImageLoading || isSubmitting}
                                 />
                             </div>
-                            {errors.icon && <p className="text-[10px] text-red-500 font-sans mt-1">{errors.icon.message}</p>}
+                            {errors.icon && <p className="text-[9px] text-main font-sans mt-1">{errors.icon.message}</p>}
                         </div>
 
                         <div className="flex justify-end gap-2 pt-4">
                             <Button type="button" variant="outline" onClick={onCancelModal} disabled={isSubmitting}>
                                 Cancel
                             </Button>
-                            <Button type="submit" disabled={isSubmitting || isUploading}>
+                            <Button type="submit" className="bg-main" disabled={isSubmitting || isUploading}>
                                 {isSubmitting ? "Saving..." : "Save"}
                             </Button>
                         </div>
