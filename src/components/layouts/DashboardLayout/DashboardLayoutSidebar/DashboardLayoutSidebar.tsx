@@ -115,7 +115,7 @@ const DashboardLayoutSidebar = (props: PropTypes) => {
                                 </div>
                                 <DialogTitle>Confirm Logout</DialogTitle>
                                 <DialogDescription className="text-xs text-center max-w-xs">
-                                    Are you sure you want to log out of your account? You will need to sign in again to access the dashboard.
+                                    Are you sure you want to log out of your account? You will need to sign in again to access the dashboard
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="flex justify-center gap-2 mb-3">

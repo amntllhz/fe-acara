@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import { useEffect } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
+        <Toaster position="top-right" />
         <Component {...pageProps} />
       </QueryClientProvider>
     </SessionProvider>

@@ -5,24 +5,26 @@ import { ILogin } from "@/types/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 const loginSchema = yup.object().shape({
-    identifier: yup.string().required("Please enter your email or username"),    
+    identifier: yup.string().required("Please enter your email or username"),
     password: yup
         .string()
         .min(8, "Password must be at least 8 characters")
-        .required("Password is required")        
+        .required("Password is required")
 });
 
 const useLogin = () => {
     const router = useRouter();
     const {
-        control, 
-        handleSubmit, 
-        formState: {errors}, 
-        reset, 
+        control,
+        handleSubmit,
+        formState: { errors },
+        reset,
         setError
-    } = useForm({resolver: yupResolver(loginSchema), 
+    } = useForm({
+        resolver: yupResolver(loginSchema),
         defaultValues: {
             identifier: "",
             password: ""
@@ -33,18 +35,18 @@ const useLogin = () => {
 
     const loginService = async (payload: ILogin) => {
         const result = await signIn("credentials", {
-            ...payload, 
-            redirect: false, 
+            ...payload,
+            redirect: false,
             callbackUrl,
         });
 
         if (result?.error && result.status === 401) {
-            throw new Error("Your email or password is incorrect.");
+            throw new Error("Your email or password is incorrect");
         }
     };
 
-    const {mutate: mutateLogin, isPending: isPendingLogin} = useMutation({
-        mutationFn: loginService,        
+    const { mutate: mutateLogin, isPending: isPendingLogin } = useMutation({
+        mutationFn: loginService,
         onError: (error: any) => {
             const message = error.response?.data?.message || error.message;
             const field = error.response?.data?.field;
@@ -52,11 +54,16 @@ const useLogin = () => {
             if (field) {
                 setError(field, { message });
             } else {
-                setError("root", { message });
+                toast.error("Login Failed", {
+                    description: message
+                });
             }
         },
 
         onSuccess: () => {
+            toast.success("Login Successful", {
+                description: "Welcome back! Redirecting to your dashboard..."
+            });
             router.push(callbackUrl);
             reset();
         },

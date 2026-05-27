@@ -60,13 +60,6 @@ const Login = () => {
                                 )} />
 
 
-                                {errors.root && (
-                                    <div className="flex gap-1.5 rounded-lg shadow-none w-full max-w-xs font-sans bg-main/10 px-2 py-2 justify-center items-center">
-                                        <CiWarning className="text-main"></CiWarning>
-                                        <p className="text-danger text-[11px] text-center font-sans">{errors.root.message}</p>
-                                    </div>
-                                )}
-
                                 {/* Button Submit */}
                                 <Button type="submit" className="btn bg-main rounded-md text-white shadow-none w-full max-w-xs text-xs font-sans mt-3">
                                     {isPendingLogin ?
