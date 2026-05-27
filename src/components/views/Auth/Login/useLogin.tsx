@@ -54,7 +54,7 @@ const useLogin = () => {
             if (field) {
                 setError(field, { message });
             } else {
-                toast.error("Login Failed", {
+                toast.error("Invalid Credentials", {
                     description: message
                 });
             }
@@ -62,7 +62,7 @@ const useLogin = () => {
 
         onSuccess: () => {
             toast.success("Login Successful", {
-                description: "Welcome back! Redirecting to your dashboard..."
+                description: "Redirecting to your dashboard..."
             });
             router.push(callbackUrl);
             reset();
