@@ -6,6 +6,8 @@ const categoryServices = {
         instance.get(`${endpoint.CATEGORY}?${params}`),
     createCategory: (payload: { name: string, description: string, icon: string }) =>
         instance.post(endpoint.CATEGORY, payload),
+    deleteCategory: (id: string) =>
+        instance.delete(`${endpoint.CATEGORY}/${id}`),
 }
 
 export default categoryServices 

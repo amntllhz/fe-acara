@@ -16,6 +16,7 @@ import { CiTrash, CiViewList } from "react-icons/ci"
 import { LIMIT_LIST, LIMIT_DEFAULT, PAGE_DEFAULT, DELAY } from "@/constants/list.constant"
 import useCategory from "./useCategory"
 import AddCategoryModal from "./AddCategoryModal"
+import DeleteCategoryModal from "./DeleteCategoryModal"
 
 const CategoryPage = () => {
     const { push } = useRouter()
@@ -29,6 +30,7 @@ const CategoryPage = () => {
 
     // Modal State
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+    const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null)
 
     // When the debounced value changes, update the URL
     useEffect(() => {
@@ -95,7 +97,8 @@ const CategoryPage = () => {
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     variant="destructive"
-                                    className="w-full text-red-500 focus:text-red-500 text-xs flex">
+                                    className="w-full text-red-500 focus:text-red-500 text-xs flex"
+                                    onClick={() => setDeleteTarget({ id: item._id, name: item.name })}>
                                     <CiTrash className="mr-1 h-3 w-3" />
                                     Delete
                                 </DropdownMenuItem>
@@ -148,6 +151,17 @@ const CategoryPage = () => {
                 onClose={() => setIsAddModalOpen(false)} 
                 onSuccess={() => {
                     setIsAddModalOpen(false);
+                    refetch();
+                }}
+            />
+
+            <DeleteCategoryModal
+                isOpen={!!deleteTarget}
+                categoryId={deleteTarget?.id ?? ""}
+                categoryName={deleteTarget?.name ?? ""}
+                onClose={() => setDeleteTarget(null)}
+                onSuccess={() => {
+                    setDeleteTarget(null);
                     refetch();
                 }}
             />
