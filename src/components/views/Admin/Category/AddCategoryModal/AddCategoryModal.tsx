@@ -119,7 +119,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
                         <Button type="button" variant="outline" onClick={onCancelModal} disabled={isSubmitting}>
                             Cancel
                         </Button>
-                        <Button type="submit" className="bg-main" disabled={isSubmitting || isUploading}>
+                        <Button type="submit" className="bg-main px-5" disabled={isSubmitting || isUploading}>
                             {isSubmitting ? "Saving..." : "Save"}
                         </Button>
                     </div>

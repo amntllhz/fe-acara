@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import uploadService from "@/services/upload.service";
 import categoryServices from "@/services/category.service";
+import { toast } from "sonner";
 
 const categorySchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -71,6 +72,9 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
     const onSubmit = async (formData: any) => {
         try {
             await categoryServices.createCategory(formData);
+            toast.success("Category Added", {
+                description: "The new category has been successfully created."
+            });
             reset();
             onSuccess();
         } catch (error) {

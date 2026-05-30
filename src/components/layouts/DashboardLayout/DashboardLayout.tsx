@@ -3,6 +3,7 @@ import { ReactNode, useState } from "react";
 import DashboardLayoutSidebar from "./DashboardLayoutSidebar";
 import { SIDEBAR_ADMIN, SIDEBAR_MEMBER } from "./DashboardLayout.constant";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { useSession } from "next-auth/react";
 
 
 interface PropTypes {
@@ -16,6 +17,10 @@ interface PropTypes {
 const DashboardLayout = (props: PropTypes) => {
     const { children, title, description, type = 'admin' } = props;
     const [open, setOpen] = useState(false);
+    
+    // Automatically redirects to /auth/login if session is expired or missing
+    const { status } = useSession({ required: true });
+    if (status === "loading") return null;
     return (
         <>
             <PageHead title={title} />

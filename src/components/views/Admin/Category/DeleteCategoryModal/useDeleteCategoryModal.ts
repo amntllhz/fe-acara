@@ -1,5 +1,6 @@
 import { useState } from "react";
 import categoryServices from "@/services/category.service";
+import { toast } from "sonner";
 
 export const useDeleteCategoryModal = (onSuccess: () => void) => {
     const [isDeleting, setIsDeleting] = useState(false);
@@ -8,6 +9,9 @@ export const useDeleteCategoryModal = (onSuccess: () => void) => {
         setIsDeleting(true);
         try {
             await categoryServices.deleteCategory(id);
+            toast.success("Category Deleted", {
+                description: "The category has been successfully removed"
+            });
             onClose();
             onSuccess();
         } catch (error) {
