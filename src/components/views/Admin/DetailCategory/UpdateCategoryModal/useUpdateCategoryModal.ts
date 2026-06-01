@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import uploadService from "@/services/upload.service";
 import categoryServices from "@/services/category.service";
 import { toast } from "sonner";
+import { Category } from "../../Category/Category.constant";
 
 const categorySchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -12,7 +13,12 @@ const categorySchema = yup.object().shape({
     icon: yup.string().required("Icon is required"),
 });
 
-export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) => {
+export const useUpdateCategoryModal = (
+    onClose: () => void,
+    onSuccess: () => void,
+    category: Category | null,
+    isOpen: boolean
+) => {
     const [isUploading, setIsUploading] = useState(false);
     const [isImageLoading, setIsImageLoading] = useState(false);
 
@@ -34,49 +40,19 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
 
     const iconUrl = watch("icon");
 
-    const validateImageDimensions = (file: File): Promise<boolean> => {
-        return new Promise((resolve) => {
-            const img = new window.Image()
-            img.src = URL.createObjectURL(file)
-            img.onload = () => {
-                URL.revokeObjectURL(img.src)
-                resolve(img.width <= 2000 && img.height <= 2000)
-            }
-            img.onerror = () => resolve(false)
-        })
-    }
+    // Pre-fill form ketika category berubah
+    useEffect(() => {
+        if (category) {
+            setValue("name", category.name);
+            setValue("description", category.description);
+            setValue("icon", category.icon);
+            if (category.icon) setIsImageLoading(true);
+        }
+    }, [isOpen, category, setValue]);
 
     const handleFileDrop = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-
-        e.target.value = "";
-
-        // Validasi format
-        const allowedTypes = ["image/png", "image/jpeg", "image/jpg"]
-        if (!allowedTypes.includes(file.type)) {
-            toast.error("Invalid file format", {
-                description: "The file format must be PNG, JPEG, or JPG"
-            })
-            return;
-        }
-
-        // Validasi ukuran (10 MB)
-        const maxSize = 10 * 1024 * 1024
-        if (file.size > maxSize) {
-            toast.error("Invalid file size", {
-                description: "The file size must be less than 10 MB"
-            })
-            return;
-        }
-
-        const isValidDimension = await validateImageDimensions(file)
-        if (!isValidDimension) {
-            toast.error("Invalid dimensions", {
-                description: "Image must be at least 2000x2000 pixels"
-            })
-            return;
-        }
 
         setIsUploading(true);
         try {
@@ -86,6 +62,12 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
             const res = await uploadService.uploadFile(formData);
             const uploadedUrl = res.data?.data?.secure_url || res.data?.secure_url;
             if (uploadedUrl) {
+                // Hapus icon lama jika bukan icon original dari category
+                if (iconUrl && iconUrl !== category?.icon) {
+                    uploadService.deleteFile({ fileUrl: iconUrl }).catch((error) => {
+                        console.error("Failed to delete old icon", error);
+                    });
+                }
                 setIsImageLoading(true);
                 setValue("icon", uploadedUrl, { shouldValidate: true });
             }
@@ -97,28 +79,29 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
     };
 
     const onCancelModal = () => {
-        onClose();
-        reset();
-        setIsUploading(false);
-        setIsImageLoading(false);
-
-        if (iconUrl) {
+        // Hapus icon baru jika user cancel dan icon sudah diganti
+        if (iconUrl && iconUrl !== category?.icon) {
             uploadService.deleteFile({ fileUrl: iconUrl }).catch((error) => {
                 console.error("Failed to delete orphaned file", error);
             });
         }
+        onClose();
+        reset();
+        setIsUploading(false);
+        setIsImageLoading(false);
     };
 
     const onSubmit = async (formData: any) => {
+        if (!category?._id) return;
         try {
-            await categoryServices.createCategory(formData);
-            toast.success("Category Added", {
-                description: "The new category has been successfully created."
+            await categoryServices.updateCategory(category._id, formData);
+            toast.success("Category Updated", {
+                description: "The category has been successfully updated."
             });
             reset();
             onSuccess();
         } catch (error) {
-            console.error("Failed to create category:", error);
+            console.error("Failed to update category:", error);
         }
     };
 
@@ -133,6 +116,6 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
         iconUrl,
         handleFileDrop,
         onCancelModal,
-        onSubmit
+        onSubmit,
     };
 };

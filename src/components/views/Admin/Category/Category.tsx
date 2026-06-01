@@ -75,7 +75,7 @@ const CategoryPage = () => {
                     )
                 case "description":
                     return (
-                        <span className="text-xs font-sans text-muted-foreground">
+                        <span className="text-xs font-sans text-muted-foreground lg:max-w-[280px] xs:max-w-[70px] truncate">
                             {item.description}
                         </span>
                     )
@@ -146,9 +146,9 @@ const CategoryPage = () => {
                 }}
             />
 
-            <AddCategoryModal 
-                isOpen={isAddModalOpen} 
-                onClose={() => setIsAddModalOpen(false)} 
+            <AddCategoryModal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
                 onSuccess={() => {
                     setIsAddModalOpen(false);
                     refetch();

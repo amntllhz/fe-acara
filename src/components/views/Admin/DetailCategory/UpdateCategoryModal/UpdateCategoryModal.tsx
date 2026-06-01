@@ -13,15 +13,17 @@ import { Button } from "@/components/ui/button";
 import { LuImageUp } from "react-icons/lu";
 import { Spinner } from "@/components/ui/spinner";
 import { RiExchange2Line } from "react-icons/ri";
-import { useAddCategoryModal } from "./useAddCategoryModal";
+import { useUpdateCategoryModal } from "./useUpdateCategoryModal";
+import { Category } from "../../Category/Category.constant";
 
-interface AddCategoryModalProps {
+interface UpdateCategoryModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
+    category: Category | null;
 }
 
-const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps) => {
+const UpdateCategoryModal = ({ isOpen, onClose, onSuccess, category }: UpdateCategoryModalProps) => {
     const {
         isUploading,
         isImageLoading,
@@ -33,8 +35,8 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
         iconUrl,
         handleFileDrop,
         onCancelModal,
-        onSubmit
-    } = useAddCategoryModal(onClose, onSuccess);
+        onSubmit,
+    } = useUpdateCategoryModal(onClose, onSuccess, category, isOpen);
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => {
@@ -42,9 +44,9 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
         }}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add New Category</DialogTitle>
+                    <DialogTitle>Update Category</DialogTitle>
                     <DialogDescription className="text-xs">
-                        Fill in the details below to create a new category.
+                        Edit the details below to update the category.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -63,7 +65,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
                         <Label htmlFor="description" className="text-xs mb-1.5 block">Description</Label>
                         <Controller name="description" control={control} render={({ field, fieldState }) => (
                             <>
-                                <TextArea {...field} aria-label="description" placeholder="Category Description" className={`input rounded-md placeholder-gray-300 shadow-none ring-1 h-16 w-full text-xs font-sans ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`} />
+                                <TextArea {...field} aria-label="description" placeholder="Category Description" className={`input rounded-md h-16 placeholder-gray-300 shadow-none ring-1 w-full text-xs font-sans ${fieldState.error ? "ring-main" : "ring-gray-200/75"}`} />
                                 {fieldState.error && <p className="text-[9px] text-main font-sans mt-1">{fieldState.error.message}</p>}
                             </>
                         )} />
@@ -82,7 +84,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
                             )}
 
                             {iconUrl && (
-                                <div className={`flex flex-col items-center gap-3 ${isImageLoading ? 'opacity-0 absolute' : 'flex'}`}>
+                                <div className={`flex flex-col items-center gap-3 ${isImageLoading ? "opacity-0 absolute" : "flex"}`}>
                                     <Image
                                         src={iconUrl}
                                         alt="Preview"
@@ -109,7 +111,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
                             )}
                             <input
                                 type="file"
-                                accept="image/png, image/jpeg, image/jpg"
+                                accept="image/*"
                                 className="absolute inset-0 opacity-0 cursor-pointer"
                                 onChange={handleFileDrop}
                                 disabled={isUploading || isImageLoading || isSubmitting}
@@ -123,7 +125,7 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
                             Cancel
                         </Button>
                         <Button type="submit" className="bg-main px-5" disabled={isSubmitting || isUploading}>
-                            {isSubmitting ? "Saving..." : "Save"}
+                            {isSubmitting ? "Saving..." : "Update"}
                         </Button>
                     </div>
                 </form>
@@ -132,4 +134,4 @@ const AddCategoryModal = ({ isOpen, onClose, onSuccess }: AddCategoryModalProps)
     );
 };
 
-export default AddCategoryModal;
+export default UpdateCategoryModal;
