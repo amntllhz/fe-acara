@@ -22,6 +22,16 @@ const DashboardLayoutSidebar = (props: PropTypes) => {
     const { sidebarItems, isOpen, onClose } = props;
     const router = useRouter();
 
+    const getSelectedKey = (pathname: string, items: SidebarItem[]) => {
+        // Cari exact match dulu
+        const exact = items.find((item) => item.href === pathname)
+        if (exact) return exact.href
+
+        // Fallback ke parent path match
+        const parent = items.find((item) => pathname.startsWith(item.href + "/"))
+        return parent?.href ?? pathname
+    }
+
     return (
         <>
             {/* Backdrop — hanya muncul di xs saat sidebar terbuka */}
@@ -68,7 +78,7 @@ const DashboardLayoutSidebar = (props: PropTypes) => {
                         aria-label="Sidebar"
                         className="w-full gap-1 max-w-xs"
                         selectionMode="single"
-                        selectedKeys={[router.pathname]}
+                        selectedKeys={[getSelectedKey(router.pathname, sidebarItems)]}
                         items={sidebarItems}
                     >
                         {sidebarItems.map((item) => (

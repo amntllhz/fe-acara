@@ -10,15 +10,16 @@ const useDetailCategory = () => {
         return data.data
     }
 
-    const { data: dataCategory, refetch } = useQuery({
-        queryKey: ["Category"],
+    const { data: dataCategory, refetch, isLoading } = useQuery({
+        queryKey: ["Category", query.id],
         queryFn: () => getCategoryById(String(query.id)),
-        enabled: isReady,
+        enabled: isReady && !!query.id,
     })
 
     return {
         dataCategory,
-        refetch
+        refetch,
+        isLoading
     }
 }
 

@@ -15,6 +15,8 @@ const categorySchema = yup.object().shape({
 export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) => {
     const [isUploading, setIsUploading] = useState(false);
     const [isImageLoading, setIsImageLoading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploadedFile, setUploadedFile] = useState<{ name: string; size: number } | null>(null);
 
     const {
         handleSubmit,
@@ -79,11 +81,17 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
         }
 
         setIsUploading(true);
+        setUploadProgress(0);
+        setUploadedFile({ name: file.name, size: file.size });
+
         try {
             const formData = new FormData();
             formData.append("file", file);
 
-            const res = await uploadService.uploadFile(formData);
+            const res = await uploadService.uploadFile(formData, (progress) => {
+                setUploadProgress(progress);
+            });
+
             const uploadedUrl = res.data?.data?.secure_url || res.data?.secure_url;
             if (uploadedUrl) {
                 setIsImageLoading(true);
@@ -91,6 +99,12 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
             }
         } catch (error) {
             console.error("Upload failed:", error);
+
+            toast.error("Upload failed", {
+                description: "Something went wrong. Please try again."
+            })
+
+            setUploadedFile(null);
         } finally {
             setIsUploading(false);
         }
@@ -101,6 +115,8 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
         reset();
         setIsUploading(false);
         setIsImageLoading(false);
+        setUploadProgress(0);
+        setUploadedFile(null);
 
         if (iconUrl) {
             uploadService.deleteFile({ fileUrl: iconUrl }).catch((error) => {
@@ -116,6 +132,7 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
                 description: "The new category has been successfully created."
             });
             reset();
+            setUploadedFile(null);
             onSuccess();
         } catch (error) {
             console.error("Failed to create category:", error);
@@ -127,6 +144,8 @@ export const useAddCategoryModal = (onClose: () => void, onSuccess: () => void) 
         isImageLoading,
         setIsImageLoading,
         handleSubmit,
+        uploadProgress,
+        uploadedFile,
         control,
         errors,
         isSubmitting,

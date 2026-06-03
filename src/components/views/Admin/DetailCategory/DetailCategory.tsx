@@ -1,17 +1,23 @@
 import { CiCircleInfo, CiEdit, CiEraser } from "react-icons/ci"
 import { Skeleton } from "@heroui/react"
 import useDetailCategory from "./useDetailCategory"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { LuPencilLine } from "react-icons/lu"
 import UpdateCategoryModal from "./UpdateCategoryModal"
 
 const DetailCategory = () => {
-    const { dataCategory, refetch } = useDetailCategory()
+    const { dataCategory, refetch, isLoading } = useDetailCategory()
     const [isImageLoading, setIsImageLoading] = useState(true)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+    const [prevIcon, setPrevIcon] = useState<string | undefined>(undefined)
 
     const currentIcon = dataCategory?.icon
+
+    if (currentIcon !== prevIcon) {
+        setPrevIcon(currentIcon)
+        setIsImageLoading(true)
+    }
 
     const formatDate = (dateString?: string) => {
         if (!dateString) return "-";
@@ -50,6 +56,7 @@ const DetailCategory = () => {
                             {currentIcon && (
                                 <img
                                     src={currentIcon}
+                                    key={currentIcon}
                                     alt={dataCategory?.name || "Category icon"}
                                     className={`h-12 w-12 object-cover transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
                                     onLoad={() => setIsImageLoading(false)}
@@ -63,13 +70,26 @@ const DetailCategory = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-[100px_1fr] gap-y-1 md:gap-y-2 gap-x-4 w-full">
                         <p className="text-xs text-gray-500 md:mt-0 mt-1">Name</p>
-                        <p className="text-xs">{dataCategory?.name}</p>
+                        {isLoading
+                            ? <Skeleton className="h-3 w-32 rounded-md" />
+                            : <p className="text-xs">{dataCategory?.name}</p>
+                        }
 
                         <p className="text-xs text-gray-500 md:mt-0 mt-1">Description</p>
-                        <p className="text-xs text-justify">{dataCategory?.description}</p>
+                        {isLoading
+                            ? <div className="flex flex-col gap-1">
+                                <Skeleton className="h-3 w-full rounded-md" />
+                                <Skeleton className="h-3 w-2/3 rounded-md" />
+                                <Skeleton className="h-3 w-2/3 rounded-md" />
+                            </div>
+                            : <p className="text-xs text-justify">{dataCategory?.description}</p>
+                        }
 
                         <p className="text-xs text-gray-500 md:mt-0 mt-1">Created at</p>
-                        <p className="text-xs">{formatDate(dataCategory?.createdAt)}</p>
+                        {isLoading
+                            ? <Skeleton className="h-3 w-24 rounded-md" />
+                            : <p className="text-xs">{formatDate(dataCategory?.createdAt)}</p>
+                        }
                     </div>
                 </div>
             </div>

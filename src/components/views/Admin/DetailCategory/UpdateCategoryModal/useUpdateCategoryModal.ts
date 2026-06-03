@@ -21,6 +21,8 @@ export const useUpdateCategoryModal = (
 ) => {
     const [isUploading, setIsUploading] = useState(false);
     const [isImageLoading, setIsImageLoading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploadedFile, setUploadedFile] = useState<{ name: string; size: number | null } | null>(null);
 
     const {
         handleSubmit,
@@ -40,13 +42,25 @@ export const useUpdateCategoryModal = (
 
     const iconUrl = watch("icon");
 
+    const generateIconFilename = (name: string) => {
+        const slug = name.toLowerCase().replace(/\s+/g, "-")
+        return `${slug}-icon.png`
+    }
+
     // Pre-fill form ketika category berubah
     useEffect(() => {
         if (category) {
             setValue("name", category.name);
             setValue("description", category.description);
             setValue("icon", category.icon);
-            if (category.icon) setIsImageLoading(true);
+            setUploadProgress(0);
+            if (category.icon) {
+                setIsImageLoading(true);
+                setUploadedFile({
+                    name: generateIconFilename(category.name),
+                    size: null
+                });
+            }
         }
     }, [isOpen, category, setValue]);
 
@@ -55,24 +69,30 @@ export const useUpdateCategoryModal = (
         if (!file) return;
 
         setIsUploading(true);
+        setUploadProgress(0);
+        setUploadedFile({ name: file.name, size: file.size });
+
         try {
             const formData = new FormData();
             formData.append("file", file);
 
-            const res = await uploadService.uploadFile(formData);
+            const res = await uploadService.uploadFile(formData, (progress) => {
+                setUploadProgress(progress);
+            });
+
             const uploadedUrl = res.data?.data?.secure_url || res.data?.secure_url;
             if (uploadedUrl) {
-                // Hapus icon lama jika bukan icon original dari category
-                if (iconUrl && iconUrl !== category?.icon) {
-                    uploadService.deleteFile({ fileUrl: iconUrl }).catch((error) => {
-                        console.error("Failed to delete old icon", error);
-                    });
-                }
                 setIsImageLoading(true);
                 setValue("icon", uploadedUrl, { shouldValidate: true });
             }
         } catch (error) {
             console.error("Upload failed:", error);
+
+            toast.error("Upload failed", {
+                description: "Something went wrong. Please try again."
+            })
+
+            setUploadedFile(null);
         } finally {
             setIsUploading(false);
         }
@@ -89,6 +109,8 @@ export const useUpdateCategoryModal = (
         reset();
         setIsUploading(false);
         setIsImageLoading(false);
+        setUploadProgress(0);
+        setUploadedFile(null);
     };
 
     const onSubmit = async (formData: any) => {
@@ -99,6 +121,7 @@ export const useUpdateCategoryModal = (
                 description: "The category has been successfully updated."
             });
             reset();
+            setUploadedFile(null);
             onSuccess();
         } catch (error) {
             console.error("Failed to update category:", error);
@@ -109,6 +132,8 @@ export const useUpdateCategoryModal = (
         isUploading,
         isImageLoading,
         setIsImageLoading,
+        uploadProgress,
+        uploadedFile,
         handleSubmit,
         control,
         errors,
