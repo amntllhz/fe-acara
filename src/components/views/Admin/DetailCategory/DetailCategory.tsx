@@ -51,7 +51,7 @@ const DetailCategory = () => {
                                         key={currentIcon}
                                         src={currentIcon}
                                         alt={dataCategory?.name || "Category icon"}
-                                        className={`h-16 w-16 object-cover p-1 transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                                        className={`h-16 w-16 object-cover rounded-xl p-1 transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
                                         onLoad={() => setIsImageLoading(false)}
                                         onError={() => setIsImageLoading(false)}
                                     />

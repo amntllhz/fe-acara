@@ -11,13 +11,13 @@ interface PropTypes {
     title?: string;
     description?: string;
     type?: string;
-
+    header?: ReactNode;
 }
 
 const DashboardLayout = (props: PropTypes) => {
-    const { children, title, description, type = 'admin' } = props;
+    const { children, title, description, type = 'admin', header } = props;
     const [open, setOpen] = useState(false);
-    
+
     // Automatically redirects to /auth/login if session is expired or missing
     const { status } = useSession({ required: true });
     if (status === "loading") return null;
@@ -46,17 +46,21 @@ const DashboardLayout = (props: PropTypes) => {
                     {/* Konten halaman */}
                     <main className="flex flex-col gap-4 p-4">
                         <div className="flex flex-col gap-1">
-                            <h1 className="font-sans text-lg font-semibold text-main tracking-wide">
-                                {title}
-                            </h1>
-                            <p className="font-sans text-xs text-gray-600">
-                                {description}
-                            </p>
+                            {header ?? (
+                                <>
+                                    <h1 className="font-sans text-lg font-semibold text-main tracking-wide">
+                                        {title}
+                                    </h1>
+                                    <p className="font-sans text-xs text-gray-600">
+                                        {description}
+                                    </p>
+                                </>
+                            )}
                         </div>
                         {children}
                     </main>
-                </div>
-            </div>
+                </div >
+            </div >
         </>
     )
 };
